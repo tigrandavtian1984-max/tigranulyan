@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Тигран (tigranulyan), фотограф: портреты, спорт, концерты, автомобили, предметная и интерьерная съёмка. Открыт к сотрудничеству.">
+<meta name="theme-color" content="#2b2d32">
+<meta property="og:title" content="tigranulyan — фотограф">
+<meta property="og:description" content="Портреты, спорт, концерты, автомобили, предметная и интерьерная съёмка.">
+<meta property="og:image" content="photos/me.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>tigranulyan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@300;400;500;600&family=Unbounded:wght@400;500;700;800&display=swap">
+<style>
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<style>
+/* Layout: single dark-graphite page; mirror-silver display type, hero with arched chrome-framed portrait beside the nick, endless 3D ring of every photo, then shoot-type sections one after another with photo-coloured glows. */
+:root{
+  color-scheme:dark;
+  --bg-top:#3a3d44; --bg-mid:#2b2d32; --bg-low:#202125;
+  --fg:#eceef1; --muted:#a9acb4; --faint:#80838b;
+  --line:rgba(255,255,255,.11); --glass:rgba(255,255,255,.055);
+  --wine:rgba(122,24,32,.32); --frost:rgba(161,176,195,.20);
+  --gold:#e7d29a;
+  --f-body:'Onest',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-wide:'Unbounded','Arial Black',system-ui,sans-serif;
+  --mx:75%; --my:12%;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg-low);color:var(--fg);font-family:var(--f-body);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:8px}
+
+.page{position:relative;overflow:clip;padding-block:20px 80px;background:
+  radial-gradient(60% 40% at 88% 4%,var(--frost),transparent 70%),
+  radial-gradient(55% 35% at 4% 58%,var(--wine),transparent 70%),
+  radial-gradient(50% 30% at 96% 92%,var(--wine),transparent 70%),
+  linear-gradient(180deg,var(--bg-top) 0%,var(--bg-mid) 40%,var(--bg-low) 100%)}
+.page::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;background:radial-gradient(460px circle at var(--mx) var(--my),rgba(225,230,240,.10),transparent 70%)}
+.wrap{position:relative;z-index:1;max-width:1160px;margin:0 auto;padding-inline:clamp(16px,4vw,40px)}
+section[id]{scroll-margin-top:24px}
+.sec{margin-top:clamp(72px,10vw,130px)}
+.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint)}
+
+/* mirror silver lettering */
+.mirror{font-family:var(--f-wide);font-weight:800;letter-spacing:-.035em;line-height:1;
+  background:
+    linear-gradient(105deg,transparent 38%,rgba(255,255,255,.95) 49%,transparent 60%) 0 0/260% 100% no-repeat,
+    linear-gradient(180deg,#ffffff 0%,#eef0f3 18%,#c3c7ce 40%,#8f949c 50%,#d6d9de 58%,#f8f9fa 74%,#b3b8bf 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 1px 0 rgba(0,0,0,.35)) drop-shadow(0 10px 24px rgba(0,0,0,.25));
+  animation:sheen 6s ease-in-out infinite}
+@keyframes sheen{0%{background-position:130% 0,0 0}55%,100%{background-position:-130% 0,0 0}}
+
+/* nav */
+nav{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 10px 10px 20px;border-radius:999px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4)}
+nav .logo{font-family:var(--f-wide);font-weight:500;font-size:14px;letter-spacing:.04em}
+nav .links{display:flex;gap:2px;flex-wrap:wrap}
+nav .links a{padding:9px 15px;border-radius:999px;font-size:14px;color:var(--muted)}
+nav .links a:hover{background:rgba(255,255,255,.08);color:var(--fg)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,340px);gap:clamp(24px,4vw,56px);align-items:center;margin-top:clamp(40px,7vw,90px)}
+.hero h1{font-size:clamp(30px,6.4vw,82px);white-space:nowrap;margin-top:14px;padding-bottom:.06em}
+.hero .who{font-size:clamp(20px,2.4vw,28px);font-weight:300;color:#d4d6db;margin-top:clamp(10px,1.6vw,18px)}
+.hero .lead{font-size:clamp(16px,1.7vw,19px);line-height:1.6;color:var(--muted);max-width:38ch;margin-top:14px}
+.btn{display:inline-flex;margin-top:28px;padding:1px;border-radius:999px;background:linear-gradient(120deg,#9a9ea6,#ffffff,#73777f,var(--gold),#9a9ea6)}
+.btn span{padding:14px 26px;border-radius:999px;background:#25262a;color:#fff;font-size:15px;transition:background .3s}
+.btn:hover span{background:#303136}
+.me{position:relative;margin:0;display:grid;place-items:center;perspective:1000px}
+.me .frame{position:relative;z-index:1;width:100%;aspect-ratio:3/4;padding:2px;border-radius:999px 999px 28px 28px;
+  background:linear-gradient(150deg,#ffffff,#9a9ea6 30%,#e9ebee 55%,#6f737b 78%,var(--gold));
+  box-shadow:0 50px 90px -30px rgba(0,0,0,.8);animation:bob 7s ease-in-out infinite}
+.me img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 28%;border-radius:999px 999px 26px 26px}
+.me .frame::after{content:"";position:absolute;inset:2px;border-radius:999px 999px 26px 26px;pointer-events:none;
+  background:linear-gradient(115deg,rgba(255,255,255,.22) 0%,transparent 28%,transparent 70%,rgba(255,255,255,.08) 100%)}
+/* glow behind the portrait: a blurred copy of the photo continues its own colours outward */
+.me .aura{position:absolute;z-index:0;inset:-4% -8%;width:116%;height:108%;object-fit:cover;object-position:50% 28%;border-radius:50%;
+  filter:blur(46px) sepia(.45) saturate(1.9) brightness(1.5);opacity:.95;mix-blend-mode:screen;pointer-events:none;animation:aura 7s ease-in-out infinite alternate}
+.me::before{content:"";position:absolute;z-index:0;left:50%;top:6%;width:140%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(255,214,140,.55),rgba(240,180,90,.25) 50%,transparent 78%);filter:blur(28px)}
+@keyframes aura{from{transform:scale(1.05)}to{transform:scale(1.16)}}
+.orbit{position:absolute;z-index:0;width:135%;aspect-ratio:1;border-radius:50%;border:1px solid rgba(231,210,154,.5);transform:rotateX(76deg);animation:orbit 14s linear infinite}
+@keyframes bob{50%{transform:translateY(-12px)}}
+@keyframes orbit{to{transform:rotateX(76deg) rotateZ(360deg)}}
+
+h2.mirror{font-size:clamp(32px,5vw,60px)}
+
+/* about */
+.about{display:grid;grid-template-columns:.8fr 1.2fr;gap:clamp(24px,5vw,72px);align-items:start}
+.about > *{min-width:0}
+.about .text{display:grid;gap:18px;font-size:clamp(17px,1.6vw,19px);line-height:1.7;color:#c9ccd2;max-width:60ch}
+.about .text p:first-child{font-size:clamp(19px,2vw,23px);color:var(--fg);line-height:1.55}
+.about blockquote{margin:6px 0;padding:18px 22px;border-radius:20px;background:var(--glass);border:1px solid var(--line);color:var(--fg);font-style:italic}
+
+/* endless ring */
+.ring-stage{--w:210px;height:clamp(330px,38vw,430px);perspective:1200px;display:grid;place-items:center;overflow:hidden;margin-top:28px;
+  mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.ring{position:relative;width:var(--w);aspect-ratio:3/4;transform-style:preserve-3d;animation:spin var(--dur,40s) linear infinite}
+@keyframes spin{from{transform:translateZ(calc(var(--r) * -1)) rotateY(0deg)}to{transform:translateZ(calc(var(--r) * -1)) rotateY(-360deg)}}
+.ring figure{position:absolute;inset:0;margin:0;border-radius:18px;overflow:hidden;transform:rotateY(calc(var(--i) * var(--step))) translateZ(var(--r));box-shadow:0 0 0 1px rgba(255,255,255,.14),0 30px 50px -20px rgba(0,0,0,.7);background:#1a1b1e}
+.ring img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* gallery: one section per shoot type, photos keep their own shape */
+.cat{margin-top:clamp(48px,7vw,90px)}
+.cat-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.cat-head h3{font-family:var(--f-wide);font-weight:500;font-size:clamp(20px,2.6vw,30px);letter-spacing:-.02em;color:var(--fg)}
+.cat-head span{font-size:14px;color:var(--faint);font-variant-numeric:tabular-nums}
+.grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(18px,2.4vw,30px);align-items:start;margin-top:clamp(24px,3vw,36px)}
+.grid .shot{grid-column:span var(--span,3)}
+.shot{all:unset;box-sizing:border-box;position:relative;display:block;cursor:zoom-in;border-radius:22px;isolation:isolate}
+.shot:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+/* glow: a blurred copy of the same photo spills its own colours around the frame */
+.shot .glow{position:absolute;inset:6%;z-index:-1;width:88%;height:88%;object-fit:cover;filter:blur(38px) saturate(1.6) brightness(1.05);opacity:.75;transform:scale(1.12);border-radius:30px;transition:opacity .6s,transform .8s cubic-bezier(.2,.7,.2,1)}
+.shot .pic{display:block;width:100%;height:auto;border-radius:22px;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 30px 60px -30px rgba(0,0,0,.7);transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.shot:hover .pic{transform:translateY(-4px) scale(1.012)}
+.shot:hover .glow{opacity:.95;transform:scale(1.2)}
+.more{margin-top:28px;font-size:14px;color:var(--faint)}
+
+/* iPhone-style scroll motion: each block rises, sharpens and scales into place as it enters (where the browser supports scroll timelines) */
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion:no-preference){
+    .reveal{animation:rise linear both;animation-timeline:view();animation-range:entry 0% cover 28%}
+    @keyframes rise{from{opacity:.0;transform:translateY(70px) scale(.92);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
+    .ring-stage{animation:zoomin linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
+    @keyframes zoomin{from{transform:scale(.8);opacity:.3}to{transform:none;opacity:1}}
+  }
+}
+
+/* collaboration */
+.collab{position:relative;padding:1px;border-radius:32px;background:linear-gradient(150deg,rgba(255,255,255,.55),rgba(255,255,255,.05) 40%,rgba(255,255,255,.05) 60%,rgba(231,210,154,.6))}
+.collab > div{border-radius:31px;background:linear-gradient(165deg,rgba(52,54,60,.92),rgba(30,31,35,.94));padding:clamp(26px,5vw,60px);display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(20px,4vw,56px);align-items:end}
+.collab > div > *{min-width:0}
+.collab p{font-size:clamp(17px,1.7vw,20px);line-height:1.65;color:#c9ccd2;margin-top:18px;max-width:46ch}
+.collab ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.collab li{padding:14px 18px;border-radius:16px;background:var(--glass);border:1px solid var(--line);font-size:15px;color:var(--fg)}
+
+/* contacts */
+.contacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:30px}
+.contacts a{display:flex;flex-direction:column;gap:8px;padding:22px 24px;border-radius:24px;background:var(--glass);border:1px solid var(--line);transition:background .3s,border-color .3s,transform .3s}
+.contacts a:hover{background:rgba(255,255,255,.09);border-color:rgba(231,210,154,.55);transform:translateY(-2px)}
+.contacts .k{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
+.contacts .val{font-size:18px;color:var(--fg);overflow-wrap:anywhere}
+.contacts .go{font-size:13px;color:var(--muted)}
+footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--faint)}
+
+/* lightbox */
+.lb{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:rgba(18,18,21,.82);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);cursor:zoom-out}
+.lb[hidden]{display:none}
+.lb img{max-width:100%;max-height:calc(100vh - 48px);border-radius:16px;box-shadow:0 40px 80px -20px rgba(0,0,0,.8)}
+
+@media (max-width:860px){
+  .about,.collab > div{grid-template-columns:1fr}
+  .hero{grid-template-columns:1fr}
+  .hero .me{order:-1;width:min(300px,78%);justify-self:center}
+  .hero h1{font-size:clamp(30px,10.4vw,82px)}
+  .contacts{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .grid{grid-template-columns:1fr}
+  .grid .shot{grid-column:auto}
+  nav .links{display:none}
+  .ring-stage{--w:140px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:0s!important;animation-iteration-count:1!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+<div class="page" id="page">
+<div class="wrap">
+  <nav><span class="logo">TIGRANULYAN</span><span class="links"><a href="#about">Обо мне</a><a href="#works">Работы</a><a href="#contacts">Контакты</a></span></nav>
+
+  <header class="hero">
+    <div>
+      <p class="eyebrow">Фотограф</p>
+      <h1 class="mirror">tigranulyan</h1>
+      <p class="who">Тигран</p>
+      <p class="lead">Снимаю, сколько себя помню. Сейчас ищу интересные проекты и съёмки и открыт к сотрудничеству.</p>
+      <a class="btn" href="#contacts"><span>Написать мне</span></a>
+    </div>
+    <figure class="me">
+      <div class="orbit" aria-hidden="true"></div>
+      <img class="aura" src="photos/me.jpg" alt="" aria-hidden="true">
+      <div class="frame"><img src="photos/me.jpg" alt="Тигран, портрет"></div>
+    </figure>
+  </header>
+
+  <section class="sec about" id="about">
+    <h2 class="mirror">Обо мне</h2>
+    <div class="text reveal">
+      <p>Я снимаю, сколько себя помню: в детстве папа отдал мне домашние камеры, которые лежали без дела, и до шести лет я бегал с ними и снимал всё подряд.</p>
+      <p>Всё изменилось в Лондоне летом 2025 года. Я неожиданно стал фотографом для двух групп и однажды спросил, почему просят именно меня. Ответ я помню до сих пор:</p>
+      <blockquote>«Ты как-то чувствуешь, как сделать кадр, и всегда получается красиво».</blockquote>
+      <p>Через два месяца у меня появилась своя камера.</p>
+      <p>Сейчас я в поиске интересных проектов и съёмок и открыт к сотрудничеству.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="works">
+    <h2 class="mirror">Работы</h2>
+    <div class="ring-stage" aria-hidden="true"><div class="ring" id="ring"></div></div>
+    <div id="cats"></div>
+    <p class="more">Новые работы добавляются постепенно.</p>
+  </section>
+
+  <section class="sec" id="collab">
+    <div class="collab reveal"><div>
+      <div>
+        <h2 class="mirror">Сотрудничество</h2>
+        <p>Готов сотрудничать с интересными проектами. Условия, даты и детали обсудим лично: просто напишите мне в любой из контактов ниже.</p>
+        <a class="btn" href="#contacts"><span>К контактам</span></a>
+      </div>
+      <ul id="types"></ul>
+    </div></div>
+  </section>
+
+  <section class="sec" id="contacts">
+    <h2 class="mirror">Контакты</h2>
+    <div class="contacts reveal">
+      <a href="https://t.me/tigranulyan" target="_blank" rel="noopener"><span class="k">Telegram</span><span class="val">@tigranulyan</span><span class="go">Написать →</span></a>
+      <a href="https://instagram.com/tigranulyan" target="_blank" rel="noopener"><span class="k">Instagram</span><span class="val">@tigranulyan</span><span class="go">Открыть профиль →</span></a>
+      <a href="#contacts" id="mail"><span class="k">Почта</span><span class="val">почта@example.com</span><span class="go">Нажмите, чтобы скопировать</span></a>
+    </div>
+    <footer><span>© 2026 Тигран · tigranulyan</span><span>Фото: Тигран</span></footer>
+  </section>
+</div>
+</div>
+
+<div class="lb" id="lb" hidden><img id="lbimg" alt=""></div>
+
+<script>
+(function(){
+/* Every photo on the site lives here. New photos: add a line with its file and shoot type. */
+const PHOTOS=[
+  {src:'photos/portrait-3044.jpg',type:'Портрет',w:933,h:1400,alt:'Студийный портрет девушки в красном свитере на холодном сером фоне'},
+  {src:'photos/portrait-3037.jpg',type:'Портрет',w:1040,h:1400,alt:'Портрет девушки в красном свитере на белых подушках'},
+  {src:'photos/portrait-3052.jpg',type:'Портрет',w:933,h:1400,alt:'Девушка на деревянном мостике у озера, вид со спины'},
+  {src:'photos/portrait-3051.jpg',type:'Портрет',w:928,h:1400,alt:'Девушка в контровом закатном свете среди деревьев'},
+  {src:'photos/sport-3048.jpg',type:'Спортивные мероприятия',w:1800,h:1200,alt:'Старт забега: ребята в синих манишках с номерами'},
+  {src:'photos/sport-6399.jpg',type:'Спортивные мероприятия',w:1800,h:1200,alt:'Бегун под номером 41 на повороте дорожки'},
+  {src:'photos/sport-3049.jpg',type:'Спортивные мероприятия',w:1800,h:1200,alt:'Бегуны на дорожке вдоль сетки, впереди номер 47'},
+  {src:'photos/sport-3047.jpg',type:'Спортивные мероприятия',w:1800,h:1243,alt:'Тренер в красной футболке Personal Trainer идёт по беговой дорожке'},
+  {src:'photos/product-5865.jpg',type:'Предметная съёмка',w:1800,h:1200,alt:'Шахматная партия на доске Armenia на фоне армянского флага'},
+  {src:'photos/product-5863.jpg',type:'Предметная съёмка',w:1800,h:1200,alt:'Доска Armenia с фигурами на шёлковом флаге, общий план'},
+  {src:'photos/product-5867.jpg',type:'Предметная съёмка',w:1800,h:1200,alt:'Шахматная доска сверху в чёрно-белом на цветном флаге'},
+  {src:'photos/concert-6611.jpg',type:'Концертная съёмка',w:1800,h:1200,alt:'Четыре девушки в бордовых армянских нарядах танцуют на сцене'},
+  {src:'photos/concert-4309.jpg',type:'Концертная съёмка',w:1200,h:1800,alt:'Танцор в синем расшитом костюме в прыжке с красным платком'},
+  {src:'photos/concert-3455.jpg',type:'Концертная съёмка',w:1800,h:1200,alt:'Пары в голубых платьях и чёрных костюмах танцуют вальс на сцене'},
+  {src:'photos/auto-porsche.jpg',type:'Автомобильная съёмка',w:930,h:1400,alt:'Герб Porsche на серебристо-голубом капоте, крупный план'},
+  {src:'photos/auto-gt4.jpg',type:'Автомобильная съёмка',w:1800,h:1200,alt:'Серебристый Porsche GT4 с номером 49 в профиль у стеклянного здания'},
+  {src:'photos/auto-bmw-rear.jpg',type:'Автомобильная съёмка',w:1800,h:1196,alt:'BMW E46 кабриолет сзади на фоне стеклянной стены'},
+  {src:'photos/auto-bmw-front.jpg',type:'Автомобильная съёмка',w:1800,h:1195,alt:'BMW E46 спереди у тротуара в закатном свете'},
+  {src:'photos/animals-7719.jpg',type:'Съёмка животных',w:1200,h:1800,alt:'Чёрно-белый котёнок смотрит вверх, рядом чёрный кот, сквозь зелень'},
+  {src:'photos/animals-8967.jpg',type:'Съёмка животных',w:1800,h:1200,alt:'Щенок с голубыми глазами выглядывает из норы под камнем'},
+  {src:'photos/animals-7959.jpg',type:'Съёмка животных',w:1200,h:1800,alt:'Чёрно-белый котёнок с янтарными глазами у старой деревянной стены'},
+  {src:'photos/animals-7997.jpg',type:'Съёмка животных',w:1301,h:1800,alt:'Полосатый котёнок в контровом свете смотрит в камеру'},
+  {src:'photos/animals-8126.jpg',type:'Съёмка животных',w:1714,h:1800,alt:'Чайка парит в голубом небе'},
+  {src:'photos/interior-3042.jpg',type:'Съёмка помещений',w:1111,h:1600,alt:'Оранжевое кресло и абстрактная картина на стене из зелёного мрамора'},
+  {src:'photos/interior-3043.jpg',type:'Съёмка помещений',w:1097,h:1600,alt:'Лифтовый холл с мрамором и золотой подсветкой, светильники-шестиугольники'},
+  {src:'photos/interior-3040.jpg',type:'Съёмка помещений',w:1094,h:1600,alt:'Светлый коридор с реечным потолком и чёрной дверью 344'},
+  {src:'photos/interior-3041.jpg',type:'Съёмка помещений',w:1051,h:1600,alt:'Лифтовый холл с узором из серых плит на полу'}
+];
+const TYPES_OFFERED=['Портреты','Предметная съёмка','Автомобили','События и группы'];
+
+/* endless ring: all photos, repeated until the ring is full */
+const ring=document.getElementById('ring');
+const slots=Math.max(10,PHOTOS.length);
+const stage=ring.parentElement;
+function layoutRing(){
+  const w=parseFloat(getComputedStyle(stage).getPropertyValue('--w'))||210;
+  const step=360/slots, r=Math.round((w/2+14)/Math.tan(Math.PI/slots));
+  ring.style.setProperty('--step',step+'deg');
+  ring.style.setProperty('--r',r+'px');
+  ring.style.setProperty('--dur',(slots*4.5)+'s');
+}
+ring.innerHTML=Array.from({length:slots},(_,i)=>{const p=PHOTOS[i%PHOTOS.length];return `<figure style="--i:${i}"><img src="${p.src}" alt="" decoding="async"></figure>`}).join('');
+layoutRing();addEventListener('resize',layoutRing);
+
+/* gallery: sections follow one another in the order types first appear */
+const types=[...new Set(PHOTOS.map(p=>p.type))];
+const cats=document.getElementById('cats');
+/* layout per section: landscape+portrait pairs share a row (4+2), leftover landscapes two per row (a lone one spans the row), portraits three per row (two when that fits better) */
+function arrange(list){
+  const land=list.filter(x=>x.w>x.h),port=list.filter(x=>x.w<=x.h),out=[];
+  while(land.length&&port.length){out.push([land.shift(),4]);out.push([port.shift(),2])}
+  land.forEach((p,i)=>out.push([p,land.length%2&&i===0?6:3]));
+  port.forEach(p=>out.push([p,port.length%3===0?2:3]));
+  return out;
+}
+const shot=(p,span)=>`<button class="shot reveal" style="--span:${span}" data-src="${p.src}" aria-label="Открыть фото: ${p.alt}"><img class="glow" src="${p.src}" alt="" aria-hidden="true" loading="lazy"><img class="pic" src="${p.src}" alt="${p.alt}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async"></button>`;
+cats.innerHTML=types.map(t=>{const list=PHOTOS.filter(p=>p.type===t);return `<div class="cat"><div class="cat-head reveal"><h3>${t}</h3><span>${list.length} фото</span></div><div class="grid">${arrange(list).map(([p,sp])=>shot(p,sp)).join('')}</div></div>`}).join('');
+
+/* lightbox */
+const lb=document.getElementById('lb'),lbimg=document.getElementById('lbimg');
+cats.addEventListener('click',e=>{const b=e.target.closest('.shot');if(!b)return;lbimg.src=b.dataset.src;lbimg.alt=b.querySelector('.pic').alt;lb.hidden=false});
+lb.addEventListener('click',()=>{lb.hidden=true});
+addEventListener('keydown',e=>{if(e.key==='Escape')lb.hidden=true});
+
+/* copy e-mail */
+const mail=document.getElementById('mail');
+mail.addEventListener('click',e=>{e.preventDefault();const v=mail.querySelector('.val').textContent,go=mail.querySelector('.go');
+  const done=()=>{go.textContent='Скопировано';setTimeout(()=>go.textContent='Нажмите, чтобы скопировать',1800)};
+  try{navigator.clipboard.writeText(v).then(done,()=>{getSelection().selectAllChildren(mail.querySelector('.val'))})}catch(_){getSelection().selectAllChildren(mail.querySelector('.val'))}
+});
+
+/* light that follows the cursor */
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const page=document.getElementById('page');
+  page.addEventListener('pointermove',e=>{const r=page.getBoundingClientRect();page.style.setProperty('--mx',(e.clientX-r.left)+'px');page.style.setProperty('--my',(e.clientY-r.top)+'px')});
+}
+})();
+</script>
+
+</body>
+</html>
