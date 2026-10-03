@@ -232,7 +232,7 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);display
     <div class="contacts reveal">
       <a href="https://t.me/tigranulyan" target="_blank" rel="noopener"><span class="k">Telegram</span><span class="val">@tigranulyan</span><span class="go">Написать →</span></a>
       <a href="https://instagram.com/tigranulyan" target="_blank" rel="noopener"><span class="k">Instagram</span><span class="val">@tigranulyan</span><span class="go">Открыть профиль →</span></a>
-      <a href="#contacts" id="mail"><span class="k">Почта</span><span class="val">почта@example.com</span><span class="go">Нажмите, чтобы скопировать</span></a>
+      <a href="mailto:tigrandavtian1984@gmail.com" id="mail"><span class="k">Почта</span><span class="val">tigrandavtian1984@gmail.com</span><span class="go">Написать письмо →</span></a>
     </div>
     <footer><span>© 2026 Тигран · tigranulyan</span><span>Фото: Тигран</span></footer>
   </section>
@@ -309,11 +309,10 @@ cats.addEventListener('click',e=>{const b=e.target.closest('.shot');if(!b)return
 lb.addEventListener('click',()=>{lb.hidden=true});
 addEventListener('keydown',e=>{if(e.key==='Escape')lb.hidden=true});
 
-/* copy e-mail */
+/* e-mail: open the mail app and also copy the address, in case no mail app is set up */
 const mail=document.getElementById('mail');
-mail.addEventListener('click',e=>{e.preventDefault();const v=mail.querySelector('.val').textContent,go=mail.querySelector('.go');
-  const done=()=>{go.textContent='Скопировано';setTimeout(()=>go.textContent='Нажмите, чтобы скопировать',1800)};
-  try{navigator.clipboard.writeText(v).then(done,()=>{getSelection().selectAllChildren(mail.querySelector('.val'))})}catch(_){getSelection().selectAllChildren(mail.querySelector('.val'))}
+mail.addEventListener('click',()=>{const v=mail.querySelector('.val').textContent,go=mail.querySelector('.go');
+  try{navigator.clipboard.writeText(v).then(()=>{go.textContent='Адрес скопирован';setTimeout(()=>go.textContent='Написать письмо →',2200)},()=>{})}catch(_){}
 });
 
 /* light that follows the cursor */
