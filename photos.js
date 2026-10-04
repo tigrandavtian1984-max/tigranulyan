@@ -31,7 +31,6 @@ window.PHOTOS=[
 /* Extra works for the «Ещё работы» space and the all-works page (gallery.html). Same fields as above; type is optional. */
 window.MORE=[
   {src:'photos/armenia-7485.jpg',w:1067,h:1600,alt:'Оранжевый закат над Севаном, солнечная дорожка и перила'},
-  {src:'photos/armenia-8056.jpg',w:1800,h:1304,alt:'Котёнок выглядывает из травы и смотрит вверх'},
   {src:'photos/armenia-7452.jpg',w:1067,h:1600,alt:'Солнце садится между двумя треугольными домиками у озера'},
   {src:'photos/armenia-8881.jpg',w:1800,h:1198,alt:'Арарат в просвете между планками скамейки'},
   {src:'photos/armenia-7433.jpg',w:1067,h:1600,alt:'Чайка над фонарным столбом в бирюзовом небе'},
@@ -46,7 +45,6 @@ window.MORE=[
   {src:'photos/armenia-7420.jpg',w:1067,h:1600,alt:'Сумеречное небо, чайки и мыс над синей водой'},
   {src:'photos/armenia-8832.jpg',w:1297,h:1600,alt:'Силуэт креста на склоне под облачным небом'},
   {src:'photos/armenia-7502.jpg',w:1800,h:1200,alt:'Синий Севан с высоты, горы в облаках'},
-  {src:'photos/armenia-8126.jpg',w:1524,h:1600,alt:'Чайка парит в светлом небе'},
   {src:'photos/armenia-8891.jpg',w:1058,h:1600,alt:'Флаг Армении на вершине холма среди облаков'},
   {src:'photos/armenia-7458.jpg',w:1029,h:1600,alt:'Озеро и горы в просвете между треугольными домиками'},
   {src:'photos/armenia-8825.jpg',w:1800,h:1129,alt:'Закатный свет над сухим холмом'},
