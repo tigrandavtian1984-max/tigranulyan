@@ -114,13 +114,13 @@ h2.mirror{font-size:clamp(32px,5vw,60px)}
 .ring figure{position:absolute;top:0;left:calc(var(--fw) / -2);width:var(--fw);height:var(--h);margin:0;border-radius:18px;transform:rotateY(var(--a)) translateZ(var(--r));box-shadow:0 0 22px -6px var(--c1,#cfd3da),0 30px 50px -20px rgba(0,0,0,.7)}
 .ring img{position:relative;width:100%;height:100%;object-fit:cover;display:block;border-radius:17px;background:#1a1b1e}
 
-/* living frame: a thin shimmering edge of silver and the photo's own colours that slowly runs around each photo */
-.edge{position:absolute;inset:-2px;padding:2px;border-radius:inherit;overflow:hidden;pointer-events:none;
+/* living frame: a thin shimmering edge of silver and the photo's own colours; only the colour angle animates (no big layers), and only while the photo is on screen */
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+.edge{position:absolute;inset:-2px;padding:2px;border-radius:inherit;pointer-events:none;
+  background:conic-gradient(from var(--ang),var(--c1,#cfd3da),#ffffff 12%,#8d929a 24%,var(--c2,#e9ebee) 38%,#f6f7f9 50%,var(--c1,#cfd3da) 62%,#7a7f87 76%,var(--c2,#ffffff) 88%,var(--c1,#cfd3da));
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
-.edge::before{content:"";position:absolute;left:50%;top:50%;width:300%;aspect-ratio:1;translate:-50% -50%;
-  background:conic-gradient(var(--c1,#cfd3da),#ffffff 12%,#8d929a 24%,var(--c2,#e9ebee) 38%,#f6f7f9 50%,var(--c1,#cfd3da) 62%,#7a7f87 76%,var(--c2,#ffffff) 88%,var(--c1,#cfd3da));
-  animation:edge 7s linear infinite}
-@keyframes edge{to{rotate:360deg}}
+.on .edge{animation:edge 7s linear infinite}
+@keyframes edge{to{--ang:360deg}}
 
 /* gallery: one section per shoot type, photos keep their own shape */
 .cat{margin-top:clamp(48px,7vw,90px)}
@@ -134,7 +134,7 @@ h2.mirror{font-size:clamp(32px,5vw,60px)}
 /* glow: a blurred copy of the same photo spills its own colours around the frame */
 .shot .glow{position:absolute;inset:6%;z-index:-1;width:88%;height:88%;object-fit:cover;filter:blur(38px) saturate(1.6) brightness(1.05);opacity:.75;transform:scale(1.12);border-radius:30px;transition:opacity .6s,transform .8s cubic-bezier(.2,.7,.2,1)}
 .shot .fr{position:relative;display:block;border-radius:22px;box-shadow:0 0 22px -6px var(--c1,#cfd3da),0 30px 60px -30px rgba(0,0,0,.7);transition:transform .8s cubic-bezier(.2,.7,.2,1)}
-.shot .pic{position:relative;transform:translateZ(0);display:block;width:100%;height:auto;border-radius:21px}
+.shot .pic{position:relative;display:block;width:100%;height:auto;border-radius:21px}
 .shot:hover .fr{transform:translateY(-4px) scale(1.012)}
 .shot:hover .glow{opacity:.95;transform:scale(1.2)}
 .more{margin-top:28px;font-size:14px;color:var(--faint)}
@@ -151,7 +151,7 @@ h2.mirror{font-size:clamp(32px,5vw,60px)}
 .space svg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .space svg ellipse{fill:none;stroke:rgba(255,255,255,.07)}
 .space svg line{stroke:rgba(225,230,240,.16);stroke-width:1}
-.planet{position:absolute;left:0;top:0;width:var(--s);height:var(--s);margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);border-radius:50%;will-change:transform}
+.planet{position:absolute;left:0;top:0;width:var(--s);height:var(--s);margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);border-radius:50%}
 .planet img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;box-shadow:0 0 0 1.5px rgba(255,255,255,.55),0 0 22px 2px var(--c1,rgba(220,225,235,.5))}
 .sun{position:absolute;left:50%;top:50%;z-index:50;translate:-50% -50%;width:clamp(100px,16vw,170px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;text-align:center;
   background:radial-gradient(circle at 35% 30%,#ffffff,#e9e1c8 30%,#b9a26a 62%,#5d5236);box-shadow:0 0 60px 18px rgba(240,215,150,.35),0 0 140px 50px rgba(240,215,150,.15);
@@ -165,6 +165,7 @@ h2.mirror{font-size:clamp(32px,5vw,60px)}
   @media (prefers-reduced-motion:no-preference){
     .reveal{animation:rise linear both;animation-timeline:view();animation-range:entry 0% cover 28%}
     @keyframes rise{from{opacity:.0;transform:translateY(70px) scale(.92);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
+    @media (max-width:860px){@keyframes rise{from{opacity:0;transform:translateY(50px) scale(.94)}to{opacity:1;transform:none}}}
     .ring-stage{animation:zoomin linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
     @keyframes zoomin{from{transform:scale(.8);opacity:.3}to{transform:none;opacity:1}}
   }
@@ -288,11 +289,13 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);display
 <script>
 (function(){
 const PHOTOS=window.PHOTOS, MORE=window.MORE||[];
+/* small copy of each photo for the ring and the space (photos/t/), so phones keep little in memory */
+const thumb=src=>src.replace('photos/','photos/t/');
 
 /* endless ring: all photos at one height, each as wide as its own shape; angles follow the real widths so gaps stay even */
 const ring=document.getElementById('ring'),stage=ring.parentElement;
 const ringList=PHOTOS.length>=10?PHOTOS:Array.from({length:10},(_,i)=>PHOTOS[i%PHOTOS.length]);
-ring.innerHTML=ringList.map(p=>`<figure data-r="${p.w/p.h}"><span class="edge"></span><img src="${p.src}" alt="" decoding="async"></figure>`).join('');
+ring.innerHTML=ringList.map(p=>`<figure data-r="${p.w/p.h}"><span class="edge"></span><img src="${thumb(p.src)}" alt="" decoding="async"></figure>`).join('');
 function layoutRing(){
   const h=parseFloat(getComputedStyle(ring).height)||220, gap=h*.09;
   const figs=[...ring.children], ws=figs.map(f=>h*parseFloat(f.dataset.r));
@@ -324,10 +327,13 @@ function arrange(list){
   port.forEach(p=>out.push([p,port.length%3===0?2:3]));
   return out;
 }
-const shot=(p,span)=>`<button class="shot reveal" style="--span:${span}" data-src="${p.src}" aria-label="Открыть фото: ${p.alt}"><img class="glow" src="${p.src}" alt="" aria-hidden="true" loading="lazy"><span class="fr"><span class="edge"></span><img class="pic" src="${p.src}" alt="${p.alt}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async"></span></button>`;
+const shot=(p,span)=>`<button class="shot reveal" style="--span:${span}" data-src="${p.src}" aria-label="Открыть фото: ${p.alt}"><img class="glow" src="${thumb(p.src)}" alt="" aria-hidden="true" loading="lazy"><span class="fr"><span class="edge"></span><img class="pic" src="${p.src}" alt="${p.alt}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async"></span></button>`;
 cats.innerHTML=types.map(t=>{const list=PHOTOS.filter(p=>p.type===t);return `<div class="cat"><div class="cat-head reveal"><h3>${t}</h3><span>${list.length} фото</span></div><div class="grid">${arrange(list).map(([p,sp])=>shot(p,sp)).join('')}</div></div>`}).join('');
 
 cats.querySelectorAll('.fr').forEach(f=>tint(f.querySelector('.pic'),f));
+/* frames shimmer only while on screen */
+const live=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('on',e.isIntersecting)),{rootMargin:'100px'});
+cats.querySelectorAll('.fr').forEach(f=>live.observe(f));
 
 
 /* «Ещё работы»: photos orbit a glowing centre on three tilted orbits, joined by faint lines; runs only while on screen */
@@ -338,7 +344,7 @@ cats.querySelectorAll('.fr').forEach(f=>tint(f.querySelector('.pic'),f));
   all.forEach((_,i)=>{orbits[i<7?0:i<19?1:2].n++});
   const planets=[];let k=0;
   orbits.forEach((o,oi)=>{for(let j=0;j<o.n;j++){const p=all[k++],el=document.createElement('span');el.className='planet';
-    el.innerHTML=`<img src="${p.src}" alt="" loading="lazy" decoding="async">`;space.appendChild(el);tint(el.querySelector('img'),el);
+    el.innerHTML=`<img src="${thumb(p.src)}" alt="" loading="lazy" decoding="async">`;space.appendChild(el);tint(el.querySelector('img'),el);
     planets.push({el,oi,a:j/o.n*Math.PI*2+oi*.7,size:[1.15,.95,.8][oi]})}});
   const NS='http://www.w3.org/2000/svg';
   const ells=orbits.map(()=>{const e=document.createElementNS(NS,'ellipse');svg.appendChild(e);return e});

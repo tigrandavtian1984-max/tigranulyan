@@ -39,12 +39,14 @@ h1.mirror{font-size:clamp(34px,6vw,72px);margin-top:clamp(40px,6vw,72px)}
 .shot .glow{position:absolute;inset:6%;z-index:-1;width:88%;height:88%;object-fit:cover;filter:blur(34px) saturate(1.6);opacity:.7;transform:scale(1.1);border-radius:28px}
 .fr{position:relative;display:block;border-radius:20px;box-shadow:0 0 22px -6px var(--c1,#cfd3da),0 30px 60px -30px rgba(0,0,0,.7);transition:transform .7s cubic-bezier(.2,.7,.2,1)}
 .shot:hover .fr{transform:translateY(-4px) scale(1.012)}
-.pic{position:relative;transform:translateZ(0);display:block;width:100%;height:auto;border-radius:19px}
-.edge{position:absolute;inset:-2px;padding:2px;border-radius:inherit;overflow:hidden;pointer-events:none;
+.pic{position:relative;display:block;width:100%;height:auto;border-radius:19px}
+/* living frame: a thin shimmering edge of silver and the photo's own colours; only the colour angle animates (no big layers), and only while the photo is on screen */
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+.edge{position:absolute;inset:-2px;padding:2px;border-radius:inherit;pointer-events:none;
+  background:conic-gradient(from var(--ang),var(--c1,#cfd3da),#ffffff 12%,#8d929a 24%,var(--c2,#e9ebee) 38%,#f6f7f9 50%,var(--c1,#cfd3da) 62%,#7a7f87 76%,var(--c2,#ffffff) 88%,var(--c1,#cfd3da));
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
-.edge::before{content:"";position:absolute;left:50%;top:50%;width:300%;aspect-ratio:1;translate:-50% -50%;
-  background:conic-gradient(var(--c1,#cfd3da),#fff 12%,#8d929a 24%,var(--c2,#e9ebee) 38%,#f6f7f9 50%,var(--c1,#cfd3da) 62%,#7a7f87 76%,var(--c2,#fff) 88%,var(--c1,#cfd3da));animation:edge 7s linear infinite}
-@keyframes edge{to{rotate:360deg}}
+.on .edge{animation:edge 7s linear infinite}
+@keyframes edge{to{--ang:360deg}}
 .lb{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:24px;background:rgba(18,18,21,.86);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);cursor:zoom-out}
 .lb img{max-width:100%;max-height:calc(100vh - 48px);border-radius:16px;box-shadow:0 40px 80px -20px rgba(0,0,0,.8)}
 footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--faint)}
@@ -70,13 +72,15 @@ const seen=new Set(),all=[...(window.MORE||[]),...window.PHOTOS].filter(p=>!seen
 const n=all.length,word=n%10===1&&n%100!==11?'фотография':[2,3,4].includes(n%10)&&![12,13,14].includes(n%100)?'фотографии':'фотографий';
 document.getElementById('count').textContent=n+' '+word;
 const cols=document.getElementById('cols');
-cols.innerHTML=all.map(p=>`<button class="shot" data-src="${p.src}" aria-label="Открыть фото${p.alt?': '+p.alt:''}"><img class="glow" src="${p.src}" alt="" aria-hidden="true" loading="lazy"><span class="fr"><span class="edge"></span><img class="pic" src="${p.src}" alt="${p.alt||''}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async"></span></button>`).join('');
+cols.innerHTML=all.map(p=>`<button class="shot" data-src="${p.src}" aria-label="Открыть фото${p.alt?': '+p.alt:''}"><img class="glow" src="${p.src.replace('photos/','photos/t/')}" alt="" aria-hidden="true" loading="lazy"><span class="fr"><span class="edge"></span><img class="pic" src="${p.src}" alt="${p.alt||''}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async"></span></button>`).join('');
 /* frame colours from each photo: its most vivid tone and its average */
 const cv=document.createElement('canvas');cv.width=cv.height=12;const cx=cv.getContext('2d',{willReadFrequently:true});
 cols.querySelectorAll('.fr').forEach(f=>{const img=f.querySelector('.pic'),go=()=>{try{cx.drawImage(img,0,0,12,12);const d=cx.getImageData(0,0,12,12).data;let R=0,G=0,B=0,best=[200,205,215],bs=-1;
   for(let i=0;i<d.length;i+=4){const r=d[i],g=d[i+1],b=d[i+2];R+=r;G+=g;B+=b;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),s=(mx-mn)*(mx/255);if(s>bs){bs=s;best=[r,g,b]}}
   const m=d.length/4,lift=v=>Math.min(255,Math.round(v*1.35+40));f.style.setProperty('--c1',`rgb(${best.map(lift).join(',')})`);f.style.setProperty('--c2',`rgb(${lift(R/m)},${lift(G/m)},${lift(B/m)})`)}catch(_){}};
   img.complete&&img.naturalWidth?go():img.addEventListener('load',go,{once:true})});
+const live=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('on',e.isIntersecting)),{rootMargin:'100px'});
+cols.querySelectorAll('.fr').forEach(f=>live.observe(f));
 const lb=document.getElementById('lb'),lbimg=document.getElementById('lbimg');
 cols.addEventListener('click',e=>{const b=e.target.closest('.shot');if(!b)return;lbimg.src=b.dataset.src;lbimg.alt=b.querySelector('.pic').alt;lb.hidden=false});
 lb.addEventListener('click',()=>{lb.hidden=true});
