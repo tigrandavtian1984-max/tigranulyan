@@ -180,7 +180,7 @@ h2.mirror{font-size:clamp(32px,5vw,60px)}
 .collab li{padding:14px 18px;border-radius:16px;background:var(--glass);border:1px solid var(--line);font-size:15px;color:var(--fg)}
 
 /* contacts */
-.contacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:30px}
+.contacts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:30px}
 .contacts a{display:flex;flex-direction:column;gap:8px;padding:22px 24px;border-radius:24px;background:var(--glass);border:1px solid var(--line);transition:background .3s,border-color .3s,transform .3s}
 .contacts a:hover{background:rgba(255,255,255,.09);border-color:rgba(231,210,154,.55);transform:translateY(-2px)}
 .contacts .k{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint)}
@@ -198,12 +198,13 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);display
   .hero{grid-template-columns:1fr}
   .hero .me{order:-1;width:min(300px,78%);justify-self:center}
   .hero h1{font-size:clamp(30px,10.4vw,82px)}
-  .contacts{grid-template-columns:1fr}
+  .contacts{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (max-width:560px){
   .grid{grid-template-columns:1fr}
   .grid .shot{grid-column:auto}
   nav .links{display:none}
+  .contacts{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:0s!important;animation-iteration-count:1!important;transition:none!important}
@@ -273,6 +274,7 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);display
     <div class="contacts reveal">
       <a href="https://t.me/tigranulyan" target="_blank" rel="noopener"><span class="k">Telegram</span><span class="val">@tigranulyan</span><span class="go">Написать →</span></a>
       <a href="https://instagram.com/tigranulyan" target="_blank" rel="noopener"><span class="k">Instagram</span><span class="val">@tigranulyan</span><span class="go">Открыть профиль →</span></a>
+      <a href="https://www.tiktok.com/@tigranulyan" target="_blank" rel="noopener"><span class="k">TikTok</span><span class="val">@tigranulyan</span><span class="go">Смотреть видео →</span></a>
       <a href="mailto:tigrandavtian1984@gmail.com" id="mail"><span class="k">Почта</span><span class="val">tigrandavtian1984@gmail.com</span><span class="go">Написать письмо →</span></a>
     </div>
     <footer><span>© 2026 Тигран · tigranulyan</span><span>Фото: Тигран</span></footer>
