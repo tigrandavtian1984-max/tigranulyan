@@ -65,6 +65,8 @@ footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);display
 
 /* phones: no blurred photo copies (they cost a lot of memory); the frame's own coloured light replaces them */
 @media (max-width:860px){.shot .glow{display:none}.shot .fr{box-shadow:0 0 30px -4px var(--c1,#cfd3da),0 24px 40px -24px rgba(0,0,0,.7)}}
+/* small phones: two columns so photos are compact but still clearly readable; a tap opens the full photo */
+@media (max-width:560px){.cols{columns:2;column-gap:12px}.shot{margin-bottom:12px;border-radius:14px}.fr{border-radius:14px}.pic{border-radius:13px}.shot .fr{box-shadow:0 0 20px -4px var(--c1,#cfd3da),0 14px 24px -16px rgba(0,0,0,.7)}.lb{padding:10px}.lb img{max-height:calc(100vh - 20px);border-radius:12px}}
 </style>
 </head>
 <body data-title-en="All work — tigranulyan">
@@ -85,7 +87,7 @@ const n=all.length,cnt=document.getElementById('count');
 const word=()=>I18N.lang==='en'?n+(n===1?' photo':' photos'):n+' '+(n%10===1&&n%100!==11?'фотография':[2,3,4].includes(n%10)&&![12,13,14].includes(n%100)?'фотографии':'фотографий');
 cnt.textContent=word();document.addEventListener('langchange',()=>{cnt.textContent=word()});
 const cols=document.getElementById('cols');
-cols.innerHTML=all.map(p=>`<button class="shot" data-src="${p.src}" aria-label="${I18N.T('open')}${p.alt?': '+p.alt:''}"><img class="glow" src="${p.src.replace('photos/','photos/t/')}" alt="" aria-hidden="true" loading="lazy"><span class="fr"><span class="edge"></span><img class="pic" src="${p.src}" srcset="${p.src.replace('photos/','photos/m/')} 1100w, ${p.src} 1800w" sizes="(max-width:560px) 340px, (max-width:900px) 300px, 33vw" alt="${p.alt||''}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async"></span></button>`).join('');
+cols.innerHTML=all.map(p=>`<button class="shot" data-src="${p.src}" aria-label="${I18N.T('open')}${p.alt?': '+p.alt:''}"><img class="glow" src="${p.src.replace('photos/','photos/t/')}" alt="" aria-hidden="true" loading="lazy"><span class="fr"><span class="edge"></span><img class="pic" src="${p.src}" srcset="${p.src.replace('photos/','photos/m/')} 1100w, ${p.src} 1800w" sizes="(max-width:560px) calc(50vw - 20px), (max-width:900px) 300px, 33vw" alt="${p.alt||''}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async"></span></button>`).join('');
 /* frame colours from each photo: its most vivid tone and its average */
 const cv=document.createElement('canvas');cv.width=cv.height=12;const cx=cv.getContext('2d',{willReadFrequently:true});
 cols.querySelectorAll('.fr').forEach(f=>{const img=f.querySelector('.pic'),go=()=>{try{cx.drawImage(img,0,0,12,12);const d=cx.getImageData(0,0,12,12).data;let R=0,G=0,B=0,best=[200,205,215],bs=-1;
