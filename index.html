@@ -106,13 +106,21 @@ h2.mirror{font-size:clamp(32px,5vw,60px)}
 .about .text p:first-child{font-size:clamp(19px,2vw,23px);color:var(--fg);line-height:1.55}
 .about blockquote{margin:6px 0;padding:18px 22px;border-radius:20px;background:var(--glass);border:1px solid var(--line);color:var(--fg);font-style:italic}
 
-/* endless ring */
-.ring-stage{--w:210px;height:clamp(330px,38vw,430px);perspective:1200px;display:grid;place-items:center;overflow:hidden;margin-top:28px;
+/* endless ring: every photo keeps its own shape (same height, own width), spaced by its real width around the circle */
+.ring-stage{--h:clamp(170px,22vw,270px);height:calc(var(--h) + 120px);perspective:1400px;display:grid;place-items:center;overflow:hidden;margin-top:28px;
   mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
-.ring{position:relative;width:var(--w);aspect-ratio:3/4;transform-style:preserve-3d;animation:spin var(--dur,40s) linear infinite}
+.ring{position:relative;width:0;height:var(--h);transform-style:preserve-3d;animation:spin var(--dur,120s) linear infinite}
 @keyframes spin{from{transform:translateZ(calc(var(--r) * -1)) rotateY(0deg)}to{transform:translateZ(calc(var(--r) * -1)) rotateY(-360deg)}}
-.ring figure{position:absolute;inset:0;margin:0;border-radius:18px;overflow:hidden;transform:rotateY(calc(var(--i) * var(--step))) translateZ(var(--r));box-shadow:0 0 0 1px rgba(255,255,255,.14),0 30px 50px -20px rgba(0,0,0,.7);background:#1a1b1e}
-.ring img{width:100%;height:100%;object-fit:cover;display:block}
+.ring figure{position:absolute;top:0;left:calc(var(--fw) / -2);width:var(--fw);height:var(--h);margin:0;border-radius:18px;transform:rotateY(var(--a)) translateZ(var(--r));box-shadow:0 0 22px -6px var(--c1,#cfd3da),0 30px 50px -20px rgba(0,0,0,.7)}
+.ring img{position:relative;width:100%;height:100%;object-fit:cover;display:block;border-radius:17px;background:#1a1b1e}
+
+/* living frame: a thin shimmering edge of silver and the photo's own colours that slowly runs around each photo */
+.edge{position:absolute;inset:-2px;padding:2px;border-radius:inherit;overflow:hidden;pointer-events:none;
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.edge::before{content:"";position:absolute;left:50%;top:50%;width:300%;aspect-ratio:1;translate:-50% -50%;
+  background:conic-gradient(var(--c1,#cfd3da),#ffffff 12%,#8d929a 24%,var(--c2,#e9ebee) 38%,#f6f7f9 50%,var(--c1,#cfd3da) 62%,#7a7f87 76%,var(--c2,#ffffff) 88%,var(--c1,#cfd3da));
+  animation:edge 7s linear infinite}
+@keyframes edge{to{rotate:360deg}}
 
 /* gallery: one section per shoot type, photos keep their own shape */
 .cat{margin-top:clamp(48px,7vw,90px)}
@@ -125,10 +133,32 @@ h2.mirror{font-size:clamp(32px,5vw,60px)}
 .shot:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
 /* glow: a blurred copy of the same photo spills its own colours around the frame */
 .shot .glow{position:absolute;inset:6%;z-index:-1;width:88%;height:88%;object-fit:cover;filter:blur(38px) saturate(1.6) brightness(1.05);opacity:.75;transform:scale(1.12);border-radius:30px;transition:opacity .6s,transform .8s cubic-bezier(.2,.7,.2,1)}
-.shot .pic{display:block;width:100%;height:auto;border-radius:22px;box-shadow:0 0 0 1px rgba(255,255,255,.12),0 30px 60px -30px rgba(0,0,0,.7);transition:transform .8s cubic-bezier(.2,.7,.2,1)}
-.shot:hover .pic{transform:translateY(-4px) scale(1.012)}
+.shot .fr{position:relative;display:block;border-radius:22px;box-shadow:0 0 22px -6px var(--c1,#cfd3da),0 30px 60px -30px rgba(0,0,0,.7);transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+.shot .pic{position:relative;transform:translateZ(0);display:block;width:100%;height:auto;border-radius:21px}
+.shot:hover .fr{transform:translateY(-4px) scale(1.012)}
 .shot:hover .glow{opacity:.95;transform:scale(1.2)}
 .more{margin-top:28px;font-size:14px;color:var(--faint)}
+
+/* «Ещё работы»: a small night sky where every photo is a planet on its orbit, joined by faint constellation lines; the whole sky opens the all-works page */
+.space{position:relative;display:block;height:clamp(440px,62vw,640px);margin-top:28px;border-radius:32px;overflow:hidden;isolation:isolate;cursor:pointer;
+  background:radial-gradient(60% 50% at 50% 50%,rgba(120,130,160,.20),transparent 70%),radial-gradient(40% 30% at 15% 80%,rgba(122,24,32,.25),transparent 70%),linear-gradient(180deg,#14151a,#0d0e12);
+  box-shadow:0 0 0 1px var(--line),0 40px 80px -40px rgba(0,0,0,.8)}
+.space::before,.space::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background-image:radial-gradient(1px 1px at 23px 41px,#fff,transparent),radial-gradient(1px 1px at 97px 13px,#dfe6ff,transparent),radial-gradient(1.5px 1.5px at 151px 117px,#fff,transparent),radial-gradient(1px 1px at 61px 163px,#ffe9c4,transparent),radial-gradient(1px 1px at 183px 71px,#fff,transparent);
+  background-size:200px 190px;opacity:.55;animation:twinkle 5s ease-in-out infinite alternate}
+.space::after{background-size:290px 260px;background-position:70px 40px;opacity:.35;animation-delay:-2.5s}
+@keyframes twinkle{to{opacity:.15}}
+.space svg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.space svg ellipse{fill:none;stroke:rgba(255,255,255,.07)}
+.space svg line{stroke:rgba(225,230,240,.16);stroke-width:1}
+.planet{position:absolute;left:0;top:0;width:var(--s);height:var(--s);margin:calc(var(--s) / -2) 0 0 calc(var(--s) / -2);border-radius:50%;will-change:transform}
+.planet img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;box-shadow:0 0 0 1.5px rgba(255,255,255,.55),0 0 22px 2px var(--c1,rgba(220,225,235,.5))}
+.sun{position:absolute;left:50%;top:50%;z-index:50;translate:-50% -50%;width:clamp(100px,16vw,170px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;text-align:center;
+  background:radial-gradient(circle at 35% 30%,#ffffff,#e9e1c8 30%,#b9a26a 62%,#5d5236);box-shadow:0 0 60px 18px rgba(240,215,150,.35),0 0 140px 50px rgba(240,215,150,.15);
+  color:#1d1d20;font-family:var(--f-wide);font-weight:700;font-size:clamp(12px,1.3vw,14px);letter-spacing:.02em;line-height:1.3;animation:pulse 4s ease-in-out infinite;transition:scale .5s}
+.space:hover .sun{scale:1.06}
+@keyframes pulse{50%{box-shadow:0 0 80px 26px rgba(240,215,150,.45),0 0 170px 60px rgba(240,215,150,.2)}}
+.space .hint{position:absolute;left:0;right:0;bottom:18px;z-index:60;text-align:center;font-size:13px;color:var(--muted)}
 
 /* iPhone-style scroll motion: each block rises, sharpens and scales into place as it enters (where the browser supports scroll timelines) */
 @supports (animation-timeline: view()){
@@ -144,6 +174,7 @@ h2.mirror{font-size:clamp(32px,5vw,60px)}
 .collab{position:relative;padding:1px;border-radius:32px;background:linear-gradient(150deg,rgba(255,255,255,.55),rgba(255,255,255,.05) 40%,rgba(255,255,255,.05) 60%,rgba(231,210,154,.6))}
 .collab > div{border-radius:31px;background:linear-gradient(165deg,rgba(52,54,60,.92),rgba(30,31,35,.94));padding:clamp(26px,5vw,60px);display:grid;grid-template-columns:1.2fr .8fr;gap:clamp(20px,4vw,56px);align-items:end}
 .collab > div > *{min-width:0}
+.collab h2{grid-column:1/-1;font-size:clamp(28px,5.4vw,60px)}
 .collab p{font-size:clamp(17px,1.7vw,20px);line-height:1.65;color:#c9ccd2;margin-top:18px;max-width:46ch}
 .collab ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}
 .collab li{padding:14px 18px;border-radius:16px;background:var(--glass);border:1px solid var(--line);font-size:15px;color:var(--fg)}
@@ -173,7 +204,6 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);display
   .grid{grid-template-columns:1fr}
   .grid .shot{grid-column:auto}
   nav .links{display:none}
-  .ring-stage{--w:140px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:0s!important;animation-iteration-count:1!important;transition:none!important}
@@ -184,7 +214,7 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);display
 <body>
 <div class="page" id="page">
 <div class="wrap">
-  <nav><span class="logo">TIGRANULYAN</span><span class="links"><a href="#about">Обо мне</a><a href="#works">Работы</a><a href="#contacts">Контакты</a></span></nav>
+  <nav><span class="logo">TIGRANULYAN</span><span class="links"><a href="#about">Обо мне</a><a href="#works">Работы</a><a href="gallery.html">Все фото</a><a href="#contacts">Контакты</a></span></nav>
 
   <header class="hero">
     <div>
@@ -216,13 +246,21 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);display
     <h2 class="mirror">Работы</h2>
     <div class="ring-stage" aria-hidden="true"><div class="ring" id="ring"></div></div>
     <div id="cats"></div>
-    <p class="more">Новые работы добавляются постепенно.</p>
+  </section>
+
+  <section class="sec" id="more">
+    <h2 class="mirror">Ещё работы</h2>
+    <a class="space reveal" href="gallery.html" id="space" aria-label="Открыть все работы">
+      <svg id="spacelines" aria-hidden="true"></svg>
+      <span class="sun">Смотреть<br>все работы</span>
+      <span class="hint">Нажмите, чтобы открыть все фото</span>
+    </a>
   </section>
 
   <section class="sec" id="collab">
     <div class="collab reveal"><div>
+      <h2 class="mirror">Сотрудничество</h2>
       <div>
-        <h2 class="mirror">Сотрудничество</h2>
         <p>Готов сотрудничать с интересными проектами. Условия, даты и детали обсудим лично: просто напишите мне в любой из контактов ниже.</p>
         <a class="btn" href="#contacts"><span>К контактам</span></a>
       </div>
@@ -244,52 +282,34 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);display
 
 <div class="lb" id="lb" hidden><img id="lbimg" alt=""></div>
 
+<script src="photos.js"></script>
 <script>
 (function(){
-/* Every photo on the site lives here. New photos: add a line with its file and shoot type. */
-const PHOTOS=[
-  {src:'photos/portrait-3037.jpg',type:'Портрет',w:1040,h:1400,alt:'Портрет девушки в красном свитере на белых подушках'},
-  {src:'photos/portrait-3052.jpg',type:'Портрет',w:933,h:1400,alt:'Девушка на деревянном мостике у озера, вид со спины'},
-  {src:'photos/portrait-3051.jpg',type:'Портрет',w:928,h:1400,alt:'Девушка в контровом закатном свете среди деревьев'},
-  {src:'photos/sport-3048.jpg',type:'Спортивные мероприятия',w:1800,h:1200,alt:'Старт забега: ребята в синих манишках с номерами'},
-  {src:'photos/sport-6399.jpg',type:'Спортивные мероприятия',w:1800,h:1200,alt:'Бегун под номером 41 на повороте дорожки'},
-  {src:'photos/sport-3049.jpg',type:'Спортивные мероприятия',w:1800,h:1200,alt:'Бегуны на дорожке вдоль сетки, впереди номер 47'},
-  {src:'photos/sport-3047.jpg',type:'Спортивные мероприятия',w:1800,h:1243,alt:'Тренер в красной футболке Personal Trainer идёт по беговой дорожке'},
-  {src:'photos/product-5865.jpg',type:'Предметная съёмка',w:1800,h:1200,alt:'Шахматная партия на доске Armenia на фоне армянского флага'},
-  {src:'photos/product-5863.jpg',type:'Предметная съёмка',w:1800,h:1200,alt:'Доска Armenia с фигурами на шёлковом флаге, общий план'},
-  {src:'photos/product-5867.jpg',type:'Предметная съёмка',w:1800,h:1200,alt:'Шахматная доска сверху в чёрно-белом на цветном флаге'},
-  {src:'photos/concert-6611.jpg',type:'Концертная съёмка',w:1800,h:1200,alt:'Четыре девушки в бордовых армянских нарядах танцуют на сцене'},
-  {src:'photos/concert-4309.jpg',type:'Концертная съёмка',w:1200,h:1800,alt:'Танцор в синем расшитом костюме в прыжке с красным платком'},
-  {src:'photos/concert-3455.jpg',type:'Концертная съёмка',w:1800,h:1200,alt:'Пары в голубых платьях и чёрных костюмах танцуют вальс на сцене'},
-  {src:'photos/auto-porsche.jpg',type:'Автомобильная съёмка',w:930,h:1400,alt:'Герб Porsche на серебристо-голубом капоте, крупный план'},
-  {src:'photos/auto-gt4.jpg',type:'Автомобильная съёмка',w:1800,h:1200,alt:'Серебристый Porsche GT4 с номером 49 в профиль у стеклянного здания'},
-  {src:'photos/auto-bmw-rear.jpg',type:'Автомобильная съёмка',w:1800,h:1196,alt:'BMW E46 кабриолет сзади на фоне стеклянной стены'},
-  {src:'photos/auto-bmw-front.jpg',type:'Автомобильная съёмка',w:1800,h:1195,alt:'BMW E46 спереди у тротуара в закатном свете'},
-  {src:'photos/animals-7719.jpg',type:'Съёмка животных',w:1200,h:1800,alt:'Чёрно-белый котёнок смотрит вверх, рядом чёрный кот, сквозь зелень'},
-  {src:'photos/animals-8967.jpg',type:'Съёмка животных',w:1800,h:1200,alt:'Щенок с голубыми глазами выглядывает из норы под камнем'},
-  {src:'photos/animals-7959.jpg',type:'Съёмка животных',w:1200,h:1800,alt:'Чёрно-белый котёнок с янтарными глазами у старой деревянной стены'},
-  {src:'photos/animals-7997.jpg',type:'Съёмка животных',w:1301,h:1800,alt:'Полосатый котёнок в контровом свете смотрит в камеру'},
-  {src:'photos/animals-8126.jpg',type:'Съёмка животных',w:1714,h:1800,alt:'Чайка парит в голубом небе'},
-  {src:'photos/interior-3042.jpg',type:'Съёмка помещений',w:1111,h:1600,alt:'Оранжевое кресло и абстрактная картина на стене из зелёного мрамора'},
-  {src:'photos/interior-3043.jpg',type:'Съёмка помещений',w:1097,h:1600,alt:'Лифтовый холл с мрамором и золотой подсветкой, светильники-шестиугольники'},
-  {src:'photos/interior-3040.jpg',type:'Съёмка помещений',w:1094,h:1600,alt:'Светлый коридор с реечным потолком и чёрной дверью 344'},
-  {src:'photos/interior-3041.jpg',type:'Съёмка помещений',w:1051,h:1600,alt:'Лифтовый холл с узором из серых плит на полу'}
-];
-const TYPES_OFFERED=['Портреты','Предметная съёмка','Автомобили','События и группы'];
+const PHOTOS=window.PHOTOS, MORE=window.MORE||[];
 
-/* endless ring: all photos, repeated until the ring is full */
-const ring=document.getElementById('ring');
-const slots=Math.max(10,PHOTOS.length);
-const stage=ring.parentElement;
+/* endless ring: all photos at one height, each as wide as its own shape; angles follow the real widths so gaps stay even */
+const ring=document.getElementById('ring'),stage=ring.parentElement;
+const ringList=PHOTOS.length>=10?PHOTOS:Array.from({length:10},(_,i)=>PHOTOS[i%PHOTOS.length]);
+ring.innerHTML=ringList.map(p=>`<figure data-r="${p.w/p.h}"><span class="edge"></span><img src="${p.src}" alt="" decoding="async"></figure>`).join('');
 function layoutRing(){
-  const w=parseFloat(getComputedStyle(stage).getPropertyValue('--w'))||210;
-  const step=360/slots, r=Math.round((w/2+14)/Math.tan(Math.PI/slots));
-  ring.style.setProperty('--step',step+'deg');
+  const h=parseFloat(getComputedStyle(ring).height)||220, gap=h*.09;
+  const figs=[...ring.children], ws=figs.map(f=>h*parseFloat(f.dataset.r));
+  const total=ws.reduce((t,w)=>t+w+gap,0), r=total/(2*Math.PI);
+  let run=0;
+  figs.forEach((f,i)=>{const c=run+ws[i]/2;run+=ws[i]+gap;f.style.setProperty('--fw',ws[i]+'px');f.style.setProperty('--a',(c/total*360)+'deg')});
   ring.style.setProperty('--r',r+'px');
-  ring.style.setProperty('--dur',(slots*4.5)+'s');
+  ring.style.setProperty('--dur',(figs.length*5)+'s');
 }
-ring.innerHTML=Array.from({length:slots},(_,i)=>{const p=PHOTOS[i%PHOTOS.length];return `<figure style="--i:${i}"><img src="${p.src}" alt="" decoding="async"></figure>`}).join('');
 layoutRing();addEventListener('resize',layoutRing);
+
+/* frame colours: read two colours from each photo (its average and its most vivid tone) */
+const tint=(()=>{const cache={},cv=document.createElement('canvas');cv.width=cv.height=12;const cx=cv.getContext('2d',{willReadFrequently:true});
+  return (img,el)=>{const go=()=>{try{let c=cache[img.src];if(!c){cx.drawImage(img,0,0,12,12);const d=cx.getImageData(0,0,12,12).data;let R=0,G=0,B=0,best=[200,205,215],bs=-1;
+      for(let i=0;i<d.length;i+=4){const r=d[i],g=d[i+1],b=d[i+2];R+=r;G+=g;B+=b;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),sat=(mx-mn)*(mx/255);if(sat>bs){bs=sat;best=[r,g,b]}}
+      const n=d.length/4,lift=v=>Math.min(255,Math.round(v*1.35+40));c=cache[img.src]=[`rgb(${lift(R/n)},${lift(G/n)},${lift(B/n)})`,`rgb(${best.map(lift).join(',')})`]}
+      el.style.setProperty('--c1',c[1]);el.style.setProperty('--c2',c[0])}catch(_){}};
+    img.complete&&img.naturalWidth?go():img.addEventListener('load',go,{once:true})}})();
+[...ring.children].forEach(f=>tint(f.querySelector('img'),f));
 
 /* gallery: sections follow one another in the order types first appear */
 const types=[...new Set(PHOTOS.map(p=>p.type))];
@@ -302,8 +322,43 @@ function arrange(list){
   port.forEach(p=>out.push([p,port.length%3===0?2:3]));
   return out;
 }
-const shot=(p,span)=>`<button class="shot reveal" style="--span:${span}" data-src="${p.src}" aria-label="Открыть фото: ${p.alt}"><img class="glow" src="${p.src}" alt="" aria-hidden="true" loading="lazy"><img class="pic" src="${p.src}" alt="${p.alt}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async"></button>`;
+const shot=(p,span)=>`<button class="shot reveal" style="--span:${span}" data-src="${p.src}" aria-label="Открыть фото: ${p.alt}"><img class="glow" src="${p.src}" alt="" aria-hidden="true" loading="lazy"><span class="fr"><span class="edge"></span><img class="pic" src="${p.src}" alt="${p.alt}" width="${p.w}" height="${p.h}" loading="lazy" decoding="async"></span></button>`;
 cats.innerHTML=types.map(t=>{const list=PHOTOS.filter(p=>p.type===t);return `<div class="cat"><div class="cat-head reveal"><h3>${t}</h3><span>${list.length} фото</span></div><div class="grid">${arrange(list).map(([p,sp])=>shot(p,sp)).join('')}</div></div>`}).join('');
+
+cats.querySelectorAll('.fr').forEach(f=>tint(f.querySelector('.pic'),f));
+
+
+/* «Ещё работы»: photos orbit a glowing centre on three tilted orbits, joined by faint lines; runs only while on screen */
+(function(){
+  const space=document.getElementById('space'),svg=document.getElementById('spacelines');
+  const seen=new Set(),all=[...MORE,...PHOTOS].filter(p=>!seen.has(p.src)&&seen.add(p.src)).slice(0,42);
+  const orbits=[{f:.36,n:0,v:.10},{f:.62,n:0,v:.065},{f:.9,n:0,v:.045}];
+  all.forEach((_,i)=>{orbits[i<7?0:i<19?1:2].n++});
+  const planets=[];let k=0;
+  orbits.forEach((o,oi)=>{for(let j=0;j<o.n;j++){const p=all[k++],el=document.createElement('span');el.className='planet';
+    el.innerHTML=`<img src="${p.src}" alt="" loading="lazy" decoding="async">`;space.appendChild(el);tint(el.querySelector('img'),el);
+    planets.push({el,oi,a:j/o.n*Math.PI*2+oi*.7,size:[1.15,.95,.8][oi]})}});
+  const NS='http://www.w3.org/2000/svg';
+  const ells=orbits.map(()=>{const e=document.createElementNS(NS,'ellipse');svg.appendChild(e);return e});
+  const lines=planets.map(()=>{const l=document.createElementNS(NS,'line');svg.appendChild(l);return l});
+  let W=0,H=0;
+  const size=()=>{W=space.clientWidth;H=space.clientHeight;
+    orbits.forEach((o,i)=>{o.rx=W/2*o.f*.94;o.ry=Math.min(H/2*o.f*.8,o.rx*(W<640?1:.42));ells[i].setAttribute('cx',W/2);ells[i].setAttribute('cy',H/2);ells[i].setAttribute('rx',o.rx);ells[i].setAttribute('ry',o.ry)})};
+  size();addEventListener('resize',size);
+  const base=()=>Math.max(34,Math.min(64,W/16));
+  function frame(dt){
+    const b=base();
+    planets.forEach(p=>{const o=orbits[p.oi];p.a+=o.v*dt;const x=W/2+Math.cos(p.a)*o.rx,y=H/2+Math.sin(p.a)*o.ry,d=(Math.sin(p.a)+1)/2;
+      p.x=x;p.y=y;const s=b*p.size*(.7+d*.5);
+      p.el.style.setProperty('--s',s+'px');p.el.style.transform=`translate(${x}px,${y}px)`;p.el.style.zIndex=d>.5&&p.oi<2?60:Math.round(d*40);p.el.style.opacity=.55+d*.45});
+    planets.forEach((p,i)=>{const q=planets[i+1]&&planets[i+1].oi===p.oi?planets[i+1]:planets.find(t=>t.oi===p.oi);const tgt=i%3===0&&p.oi<2?planets.find(t=>t.oi===p.oi+1&&Math.abs(Math.cos(t.a-p.a))>.9)||q:q;
+      lines[i].setAttribute('x1',p.x);lines[i].setAttribute('y1',p.y);lines[i].setAttribute('x2',tgt.x);lines[i].setAttribute('y2',tgt.y)});
+  }
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;let on=false,last=0;
+  const loop=t=>{if(!on)return;const dt=last?Math.min(.05,(t-last)/1000):0;last=t;frame(dt);requestAnimationFrame(loop)};
+  frame(0);
+  if(!still)new IntersectionObserver(es=>{const v=es[0].isIntersecting;if(v&&!on){on=true;last=0;requestAnimationFrame(loop)}else if(!v)on=false}).observe(space);
+})();
 
 /* lightbox */
 const lb=document.getElementById('lb'),lbimg=document.getElementById('lbimg');
