@@ -180,6 +180,11 @@ h2.mirror{font-size:clamp(32px,5vw,60px)}
     @media (max-width:860px){@keyframes lineup{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}}
     .ring-stage{animation:zoomin linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
     @keyframes zoomin{from{transform:scale(.8);opacity:.3}to{transform:none;opacity:1}}
+    /* work photos arrive on a diagonal, out of a soft blur into sharp focus; neighbours come from opposite sides */
+    .grid .shot.reveal{--dx:-90px;animation-name:diag;animation-range:entry 0% cover 38%}
+    .grid .shot.reveal:nth-child(even){--dx:90px}
+    @keyframes diag{from{opacity:0;transform:translate(var(--dx),110px) scale(.9);filter:blur(18px)}45%{opacity:1}to{opacity:1;transform:none;filter:none}}
+    @media (max-width:860px){@keyframes diag{from{opacity:0;transform:translate(calc(var(--dx) * .7),80px) scale(.92);filter:blur(10px)}45%{opacity:1}to{opacity:1;transform:none;filter:none}}}
   }
 }
 
