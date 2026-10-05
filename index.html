@@ -358,7 +358,7 @@ cats.querySelectorAll('.fr').forEach(f=>live.observe(f));
   const planets=[];let k=0;
   orbits.forEach((o,oi)=>{for(let j=0;j<o.n;j++){const p=all[k++],el=document.createElement('span');el.className='planet';
     el.innerHTML=`<img src="${thumb(p.src)}" alt="" loading="lazy" decoding="async">`;space.appendChild(el);tint(el.querySelector('img'),el);
-    planets.push({el,oi,a:j/o.n*Math.PI*2+oi*.7,size:[1.15,.95,.8][oi]})}});
+    planets.push({el,oi,a:j/o.n*Math.PI*2+oi*.7,size:[1.15,.95,.8][oi],d:planets.length*.07,f:Math.random()*Math.PI*2,k:0})}});
   const NS='http://www.w3.org/2000/svg';
   const ells=orbits.map(()=>{const e=document.createElementNS(NS,'ellipse');svg.appendChild(e);return e});
   const lines=planets.map(()=>{const l=document.createElementNS(NS,'line');svg.appendChild(l);return l});
@@ -367,17 +367,23 @@ cats.querySelectorAll('.fr').forEach(f=>live.observe(f));
     orbits.forEach((o,i)=>{o.rx=W/2*o.f*.94;o.ry=Math.min(H/2*o.f*.8,o.rx*(W<640?1:.42));ells[i].setAttribute('cx',W/2);ells[i].setAttribute('cy',H/2);ells[i].setAttribute('rx',o.rx);ells[i].setAttribute('ry',o.ry)})};
   size();addEventListener('resize',size);
   const base=()=>Math.max(34,Math.min(64,W/16));
+  /* fly-in: when the sky is first scrolled to, the photos arrive one by one from outside and settle on their orbits */
+  let T=0,flying=false;
+  const ease=k=>1-Math.pow(1-k,3);
   function frame(dt){
-    const b=base();
+    const b=base();if(flying)T+=dt;
     planets.forEach(p=>{const o=orbits[p.oi];p.a+=o.v*dt;const x=W/2+Math.cos(p.a)*o.rx,y=H/2+Math.sin(p.a)*o.ry,d=(Math.sin(p.a)+1)/2;
-      p.x=x;p.y=y;const s=b*p.size*(.7+d*.5);
-      p.el.style.setProperty('--s',s+'px');p.el.style.transform=`translate(${x}px,${y}px)`;p.el.style.zIndex=d>.5&&p.oi<2?60:Math.round(d*40);p.el.style.opacity=.55+d*.45});
+      p.k=flying?Math.max(0,Math.min(1,(T-p.d)/1.3)):0;const e=ease(p.k),sx=W/2+Math.cos(p.f)*W*.75,sy=H/2+Math.sin(p.f)*H*.8,px=sx+(x-sx)*e,py=sy+(y-sy)*e;
+      p.x=px;p.y=py;const s=b*p.size*(.7+d*.5)*(.35+.65*e);
+      p.el.style.setProperty('--s',s+'px');p.el.style.transform=`translate(${px}px,${py}px)`;p.el.style.zIndex=d>.5&&p.oi<2?60:Math.round(d*40);p.el.style.opacity=(.55+d*.45)*Math.min(1,p.k*3)});
     planets.forEach((p,i)=>{const q=planets[i+1]&&planets[i+1].oi===p.oi?planets[i+1]:planets.find(t=>t.oi===p.oi);const tgt=i%3===0&&p.oi<2?planets.find(t=>t.oi===p.oi+1&&Math.abs(Math.cos(t.a-p.a))>.9)||q:q;
-      lines[i].setAttribute('x1',p.x);lines[i].setAttribute('y1',p.y);lines[i].setAttribute('x2',tgt.x);lines[i].setAttribute('y2',tgt.y)});
+      lines[i].style.opacity=Math.min(p.k,tgt.k);lines[i].setAttribute('x1',p.x);lines[i].setAttribute('y1',p.y);lines[i].setAttribute('x2',tgt.x);lines[i].setAttribute('y2',tgt.y)});
   }
   const still=matchMedia('(prefers-reduced-motion: reduce)').matches;let on=false,last=0;
   const loop=t=>{if(!on)return;const dt=last?Math.min(.05,(t-last)/1000):0;last=t;frame(dt);requestAnimationFrame(loop)};
   frame(0);
+  if(still){flying=true;T=99;frame(0)}
+  else new IntersectionObserver((es,ob)=>{if(es[0].isIntersecting){flying=true;ob.disconnect()}},{threshold:.35}).observe(space);
   if(!still)new IntersectionObserver(es=>{const v=es[0].isIntersecting;if(v&&!on){on=true;last=0;requestAnimationFrame(loop)}else if(!v)on=false}).observe(space);
 })();
 
