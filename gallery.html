@@ -18,7 +18,9 @@
   padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
 body{margin:0;min-height:100vh;color:var(--fg);font-family:var(--f-body);-webkit-font-smoothing:antialiased;
-  background:radial-gradient(60% 40% at 88% 0%,rgba(161,176,195,.18),transparent 70%),radial-gradient(55% 35% at 4% 50%,rgba(122,24,32,.28),transparent 70%),linear-gradient(180deg,var(--bg-top),var(--bg-mid) 30%,var(--bg-low));background-attachment:fixed}
+  background:radial-gradient(60% 40% at 88% 0%,rgba(161,176,195,.12),transparent 70%),radial-gradient(55% 35% at 4% 50%,rgba(122,24,32,.24),transparent 70%),linear-gradient(180deg,#1b1c21,#121317 35%,#0c0d10);background-attachment:fixed}
+/* night sky behind the photos (drawn by the script at the end): one canvas, fixed, never catches taps */
+#sky{position:fixed;left:0;top:0;width:100%;height:100vh;height:100lvh;z-index:-1;pointer-events:none;display:block}
 a{color:inherit;text-decoration:none}
 img{max-width:100%}
 [hidden]{display:none!important}
@@ -66,10 +68,11 @@ footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);display
 /* phones: no blurred photo copies (they cost a lot of memory); the frame's own coloured light replaces them */
 @media (max-width:860px){.shot .glow{display:none}.shot .fr{box-shadow:0 0 30px -4px var(--c1,#cfd3da),0 24px 40px -24px rgba(0,0,0,.7)}}
 /* small phones: two columns so photos are compact but still clearly readable; a tap opens the full photo */
-@media (max-width:560px){.cols{columns:2;column-gap:12px}.shot{margin-bottom:12px;border-radius:14px}.fr{border-radius:14px}.pic{border-radius:13px}.shot .fr{box-shadow:0 0 20px -4px var(--c1,#cfd3da),0 14px 24px -16px rgba(0,0,0,.7)}.lb{padding:10px}.lb img{max-height:calc(100vh - 20px);border-radius:12px}}
+@media (max-width:560px){.cols{columns:2;column-gap:16px}.shot{margin-bottom:16px;border-radius:14px}.fr{border-radius:14px}.pic{border-radius:13px}.shot .fr{box-shadow:0 0 20px -4px var(--c1,#cfd3da),0 14px 24px -16px rgba(0,0,0,.7)}.lb{padding:10px}.lb img{max-height:calc(100vh - 20px);border-radius:12px}}
 </style>
 </head>
 <body data-title-en="All work — tigranulyan">
+<canvas id="sky" aria-hidden="true"></canvas>
 <div class="wrap">
   <nav><a class="logo" href="./">TIGRANULYAN</a><span class="right"><a class="back" href="./#more" data-i18n="gal.back">← На главную</a><span class="lang" role="group" aria-label="Язык / Language"><button type="button" data-l="ru">RU</button><button type="button" data-l="en">EN</button></span></span></nav>
   <h1 class="mirror" data-i18n="gal.h">Все работы</h1>
@@ -99,8 +102,82 @@ cols.querySelectorAll('.fr').forEach(f=>live.observe(f));
 I18N.apply();
 const lb=document.getElementById('lb'),lbimg=document.getElementById('lbimg');
 cols.addEventListener('click',e=>{const b=e.target.closest('.shot');if(!b)return;lbimg.src=b.dataset.src;lbimg.alt=b.querySelector('.pic').alt;lb.hidden=false});
-lb.addEventListener('click',()=>{lb.hidden=true});
-addEventListener('keydown',e=>{if(e.key==='Escape')lb.hidden=true});
+lb.addEventListener('click',()=>{lb.hidden=true;sky.kick()});
+addEventListener('keydown',e=>{if(e.key==='Escape'){lb.hidden=true;sky.kick()}});
+
+/* space behind the photos: every photo is a small planet on one spiral arm around a golden sun, in the order the photos come while scrolling.
+   The view glides and zooms to the planet of the photo in the middle of the screen, like the iPhone astronomy wallpaper.
+   Phone-friendly: a single canvas with tiny 200px planet copies (photos/p/), drawn only while the view is still moving; nothing runs when idle,
+   behind the open photo, or when the visitor asked for less motion (then the whole sky just stands still). */
+const sky=(function(){
+  const cv=document.getElementById('sky'),g=cv.getContext('2d'),shots=[...cols.querySelectorAll('.shot')],N=shots.length;
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* planets along an even spiral: same step between neighbours, same gap between turns */
+  const STEP=70,TURN=118,R0=135,P=[];let th=0;
+  for(let i=0;i<N;i++){const r=R0+TURN*th/(Math.PI*2);P.push({x:Math.cos(th)*r,y:Math.sin(th)*r*.86});th+=STEP/r}
+  const RMAX=R0+TURN*th/(Math.PI*2);
+  /* planet pictures: loaded quietly after the gallery itself; the frame colour of each photo becomes its planet's glow */
+  const pics=shots.map(s=>{const o={img:null,c:'rgba(200,205,215,.5)'},im=new Image(),src=s.dataset.src;im.decoding='async';
+    im.onload=()=>{o.img=im;try{tc.drawImage(im,0,0,1,1);const d=tc.getImageData(0,0,1,1).data;const L=v=>Math.min(255,v*1.3+40|0);o.c=`rgba(${L(d[0])},${L(d[1])},${L(d[2])},.55)`}catch(_){}draw()};
+    im.onerror=()=>{if(!im.dataset.f){im.dataset.f=1;im.src=src.replace('photos/','photos/t/')}};o.load=()=>{im.src=src.replace('photos/','photos/p/')};return o});
+  const tcv=document.createElement('canvas');tcv.width=tcv.height=1;const tc=tcv.getContext('2d',{willReadFrequently:true});
+  /* stars: one tile of points repeated over the screen, moving slower than the planets for depth */
+  const ST=520,stars=Array.from({length:70},()=>[Math.random()*ST,Math.random()*ST,Math.random()<.15?1.6:1,.25+Math.random()*.6]);
+  let W=0,H=0,dpr=1,order=[],cy=[],zNear=1.6,zFar=.4;
+  const cam={x:0,y:0,z:.4,f:-1,ax:.5,ay:.5},tgt={x:0,y:0,z:.4,f:-1,ax:.5,ay:.5};
+  function size(){W=innerWidth;H=cv.clientHeight||innerHeight;dpr=Math.min(2,devicePixelRatio||1);cv.width=W*dpr|0;cv.height=H*dpr|0;
+    zFar=Math.min(W,H)/(2*RMAX+110);zNear=W<560?1.2:1.5}
+  /* which photo comes when: photos sorted by their height on the page; planet k belongs to the k-th of them */
+  function measure(){const y=scrollY,m=shots.map((s,i)=>{const b=s.getBoundingClientRect();return [b.top+y+b.height/2,i]}).sort((a,b)=>a[0]-b[0]);
+    order=m.map(a=>a[1]);cy=m.map(a=>a[0])}
+  function aim(){
+    const v=scrollY+innerHeight/2;
+    /* page top: the sun glows beside the heading; scrolling into the photos flies from it out along the arm */
+    if(still||!N){Object.assign(tgt,{x:0,y:0,z:zNear*.8,f:-1,ax:.74,ay:.2});return}
+    if(v<=cy[0]){const t=Math.max(0,Math.min(1,(v-innerHeight/2)/Math.max(1,cy[0]-innerHeight/2))),e=t*t*(3-2*t);
+      Object.assign(tgt,{x:P[0].x*e,y:P[0].y*e,z:zNear*(.8+.2*e),f:e-1,ax:.74-.24*e,ay:.2+.3*e});return}
+    let k=0;while(k<N-1&&cy[k+1]<=v)k++;
+    const f=k<N-1?k+(v-cy[k])/Math.max(1,cy[k+1]-cy[k]):N-1,a=P[Math.floor(f)],b=P[Math.min(N-1,Math.floor(f)+1)],t=f-Math.floor(f);
+    Object.assign(tgt,{x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t,z:zNear,f,ax:.5,ay:.5})}
+  function draw(){
+    g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
+    const z=cam.z,ox=W*cam.ax-cam.x*z,oy=H*cam.ay-cam.y*z;
+    /* stars */
+    const sx=((ox*.18)%ST+ST)%ST,sy=((oy*.18)%ST+ST)%ST;
+    for(let X=sx-ST;X<W;X+=ST)for(let Y=sy-ST;Y<H;Y+=ST)for(const s of stars){g.globalAlpha=s[3];g.fillStyle='#e9eeff';g.fillRect(X+s[0],Y+s[1],s[2],s[2])}
+    g.globalAlpha=1;g.setTransform(dpr*z,0,0,dpr*z,dpr*ox,dpr*oy);
+    /* sun */
+    const sun=g.createRadialGradient(0,0,0,0,0,190);sun.addColorStop(0,'rgba(255,240,200,.95)');sun.addColorStop(.22,'rgba(233,210,150,.7)');sun.addColorStop(.42,'rgba(185,162,106,.22)');sun.addColorStop(1,'rgba(185,162,106,0)');
+    g.fillStyle=sun;g.beginPath();g.arc(0,0,190,0,7);g.fill();
+    /* the spiral path through all planets, like a faint constellation line */
+    g.strokeStyle='rgba(225,230,240,.13)';g.lineWidth=1/z;g.beginPath();P.forEach((p,i)=>i?g.lineTo(p.x,p.y):g.moveTo(p.x,p.y));g.stroke();
+    /* planets: only those on screen; the one in focus is a little bigger and brighter */
+    const pad=80,x0=-ox/z-pad,x1=(W-ox)/z+pad,y0=-oy/z-pad,y1=(H-oy)/z+pad;
+    for(let k=0;k<N;k++){const p=P[k];if(p.x<x0||p.x>x1||p.y<y0||p.y>y1)continue;
+      const o=pics[order[k]]||pics[k],near=Math.max(0,1-Math.abs(k-cam.f)),r=15*(1+1.3*near);
+      if(near>.05){const h=g.createRadialGradient(p.x,p.y,r*.8,p.x,p.y,r*2.4);h.addColorStop(0,o.c);h.addColorStop(1,'rgba(0,0,0,0)');g.globalAlpha=near;g.fillStyle=h;g.beginPath();g.arc(p.x,p.y,r*2.4,0,7);g.fill()}
+      g.globalAlpha=.5+.5*near;
+      if(o.img){g.save();g.beginPath();g.arc(p.x,p.y,r,0,7);g.clip();g.drawImage(o.img,p.x-r,p.y-r,r*2,r*2);g.restore()}
+      else{g.fillStyle='#5b5f68';g.beginPath();g.arc(p.x,p.y,r,0,7);g.fill()}
+      g.strokeStyle='rgba(255,255,255,.55)';g.lineWidth=1.3/z;g.beginPath();g.arc(p.x,p.y,r,0,7);g.stroke()}
+    g.globalAlpha=1}
+  /* gliding: the view eases toward its target (soft start, soft stop) and the loop ends once it arrives */
+  let run=false,last=0;
+  function loop(t){const dt=last?Math.min(.05,(t-last)/1000):.016;last=t;
+    if(!lb.hidden){run=false;return}
+    const e=1-Math.exp(-dt*3.2);let moving=false;
+    for(const q of ['x','y','z','f','ax','ay']){const d=tgt[q]-cam[q];cam[q]+=d*e;if(Math.abs(d)>(q==='x'||q==='y'?.05:.001))moving=true}
+    draw();if(moving)requestAnimationFrame(loop);else run=false}
+  function kick(){if(still)return;aim();if(!run&&lb.hidden){run=true;last=0;requestAnimationFrame(loop)}}
+  let lastW=0;
+  function relayout(){if(innerWidth!==lastW){lastW=innerWidth;size()}measure();aim();Object.assign(cam,tgt);draw()}
+  relayout();
+  addEventListener('scroll',kick,{passive:true});
+  addEventListener('resize',()=>{if(innerWidth!==lastW)relayout()});
+  addEventListener('load',()=>{relayout();pics.forEach(o=>o.load())});
+  if(document.fonts)document.fonts.ready.then(relayout);
+  return {kick};
+})();
 })();
 </script>
 </body>
