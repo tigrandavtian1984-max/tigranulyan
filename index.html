@@ -175,10 +175,15 @@ h2.mirror{font-size:clamp(32px,5vw,60px)}
     .reveal{animation:rise linear both;animation-timeline:view();animation-range:entry 0% cover 28%}
     @keyframes rise{from{opacity:.0;transform:translateY(70px) scale(.92);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
     @media (max-width:860px){@keyframes rise{from{opacity:0;transform:translateY(50px) scale(.94)}to{opacity:1;transform:none}}}
+    .ln{animation:lineup linear both;animation-timeline:view();animation-range:entry 0% cover 35%}
+    @keyframes lineup{from{opacity:0;transform:translateY(26px);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+    @media (max-width:860px){@keyframes lineup{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}}
     .ring-stage{animation:zoomin linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
     @keyframes zoomin{from{transform:scale(.8);opacity:.3}to{transform:none;opacity:1}}
   }
 }
+
+.ln{display:block;white-space:nowrap}
 
 /* collaboration */
 .collab{position:relative;padding:1px;border-radius:32px;background:linear-gradient(150deg,rgba(255,255,255,.55),rgba(255,255,255,.05) 40%,rgba(255,255,255,.05) 60%,rgba(231,210,154,.6))}
@@ -247,7 +252,7 @@ footer{margin-top:72px;padding-top:22px;border-top:1px solid var(--line);display
 
   <section class="sec about" id="about">
     <h2 class="mirror" data-i18n="about.h">Обо мне</h2>
-    <div class="text reveal">
+    <div class="text">
       <p data-i18n="about.p1">Я снимаю, сколько себя помню: в детстве папа отдал мне домашние камеры, которые лежали без дела, и до шести лет я бегал с ними и снимал всё подряд.</p>
       <p data-i18n="about.p2">Всё изменилось в Лондоне летом 2025 года. Я неожиданно стал фотографом для двух групп и однажды спросил, почему просят именно меня. Ответ я помню до сих пор:</p>
       <blockquote data-i18n="about.q">«Ты как-то чувствуешь, как сделать кадр, и всегда получается красиво».</blockquote>
@@ -389,6 +394,27 @@ cats.querySelectorAll('.fr').forEach(f=>live.observe(f));
 
 /* language: translate everything now and again whenever the switch is used */
 I18N.apply();
+
+/* text rises line by line: paragraphs are split into their real lines, each line then sharpens on its own as it scrolls in */
+(function(){
+  if(!CSS.supports('animation-timeline: view()')||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const sel='.about .text p,.about .text blockquote,.collab p';
+  const split=()=>document.querySelectorAll(sel).forEach(el=>{
+    if(el.dataset.src===undefined)el.dataset.src=el.textContent.trim();
+    const words=el.dataset.src.split(/\s+/);
+    el.innerHTML=words.map(w=>`<span class="w">${w}</span>`).join(' ');
+    const lines=[];let top=null;
+    el.querySelectorAll('.w').forEach(w=>{if(top===null||Math.abs(w.offsetTop-top)>4){lines.push([]);top=w.offsetTop}lines[lines.length-1].push(w.textContent)});
+    el.innerHTML=lines.map(l=>`<span class="ln">${l.join(' ')} </span>`).join('');
+    el.setAttribute('aria-label',el.dataset.src)});
+  let w0=innerWidth;
+  const run=()=>{document.querySelectorAll(sel).forEach(e=>{if(e.dataset.src!==undefined)e.textContent=e.dataset.src});split()};
+  split();
+  document.addEventListener('langchange',()=>{document.querySelectorAll(sel).forEach(e=>delete e.dataset.src);split()});
+  let tm;addEventListener('resize',()=>{if(innerWidth===w0)return;w0=innerWidth;clearTimeout(tm);tm=setTimeout(run,200)});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(run);
+})();
+
 
 /* lightbox */
 const lb=document.getElementById('lb'),lbimg=document.getElementById('lbimg');
